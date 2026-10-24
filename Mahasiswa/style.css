@@ -1,0 +1,211 @@
+/* ============================================================
+   style.css — Custom styles for ITS Student Expense Dashboard
+   Tailwind CSS handles most styling; this file adds extras.
+   ============================================================ */
+
+/* ---- Smooth base transition ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ---- Filter elements ---- */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.625rem;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  font-size: 0.8rem;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ---- KPI Cards ---- */
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 1rem;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.kpi-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpi-value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 2px 0;
+  transition: color 0.2s;
+}
+
+.kpi-sub {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* ---- Chart Cards ---- */
+.chart-card {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: box-shadow 0.15s ease;
+}
+
+.chart-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.chart-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+
+/* Chart wrappers control canvas height */
+.chart-container {
+  position: relative;
+  height: 240px;
+}
+
+.chart-container-sm {
+  position: relative;
+  height: 220px;
+}
+
+/* ---- Insight Cards ---- */
+.insight-card {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 1rem;
+  padding: 1rem 1.15rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-left: 3px solid #3b82f6;
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.insight-card.amber { border-left-color: #f59e0b; }
+.insight-card.red   { border-left-color: #f43f5e; }
+.insight-card.green { border-left-color: #10b981; }
+.insight-card.purple{ border-left-color: #8b5cf6; }
+
+.insight-icon {
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+}
+
+.insight-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.insight-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.insight-desc {
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ---- Top 10 Table ---- */
+#table-top10 tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.1s;
+}
+
+#table-top10 tr:last-child { border-bottom: none; }
+
+#table-top10 tr:hover { background-color: #f9fafb; }
+
+#table-top10 td {
+  padding: 0.65rem 1rem;
+  color: #374151;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.badge-defisit {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-surplus {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+/* ---- Scrollbar custom ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ---- Responsive canvas fix ---- */
+canvas { display: block; max-width: 100%; }

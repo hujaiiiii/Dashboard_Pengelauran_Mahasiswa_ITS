@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Pengeluaran Mahasiswa ITS</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+
+  <!-- ===== HEADER ===== -->
+  <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <div class="max-w-screen-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">ITS</div>
+        <div>
+          <h1 class="text-base font-semibold text-gray-800 leading-tight">Dashboard Pengeluaran Mahasiswa</h1>
+          <p class="text-xs text-gray-500">Institut Teknologi Sepuluh Nopember · Juli–September 2026</p>
+        </div>
+      </div>
+      <span id="data-count" class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Memuat data...</span>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="max-w-screen-2xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- ===== FILTER PANEL ===== -->
+    <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-gray-700">Filter Data</h2>
+        <button id="btn-reset" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors">Reset Semua</button>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="filter-group">
+          <label class="filter-label" for="f-fakultas">Fakultas</label>
+          <select id="f-fakultas" class="filter-select">
+            <option value="">Semua Fakultas</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="f-prodi">Program Studi</label>
+          <select id="f-prodi" class="filter-select">
+            <option value="">Semua Prodi</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="f-angkatan">Angkatan</label>
+          <select id="f-angkatan" class="filter-select">
+            <option value="">Semua Angkatan</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="f-tempat">Tempat Tinggal</label>
+          <select id="f-tempat" class="filter-select">
+            <option value="">Semua Tempat</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="f-dana">Sumber Dana</label>
+          <select id="f-dana" class="filter-select">
+            <option value="">Semua Sumber</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EMPTY STATE ===== -->
+    <div id="empty-state" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+      <div class="text-4xl mb-3">🔍</div>
+      <p class="text-gray-500 font-medium">Tidak ada data yang sesuai dengan filter yang dipilih.</p>
+      <p class="text-gray-400 text-sm mt-1">Coba ubah atau reset filter untuk melihat data.</p>
+    </div>
+
+    <!-- ===== DASHBOARD CONTENT (hidden when empty) ===== -->
+    <div id="dashboard-content">
+
+      <!-- ===== KPI CARDS ===== -->
+      <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="kpi-card">
+          <p class="kpi-label">Total Pengeluaran</p>
+          <p id="kpi-total" class="kpi-value text-blue-600">—</p>
+          <p class="kpi-sub" id="kpi-total-sub">seluruh mahasiswa</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Rata-rata / Mahasiswa</p>
+          <p id="kpi-avg" class="kpi-value text-indigo-600">—</p>
+          <p class="kpi-sub" id="kpi-avg-sub">per bulan</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Rasio P : S : T</p>
+          <p id="kpi-ratio" class="kpi-value text-amber-600 text-lg">—</p>
+          <p class="kpi-sub">Primer · Sekunder · Tersier</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Kategori Terbesar</p>
+          <p id="kpi-top-cat" class="kpi-value text-emerald-600 text-xl">—</p>
+          <p id="kpi-top-cat-sub" class="kpi-sub">—</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Mahasiswa Defisit</p>
+          <p id="kpi-defisit" class="kpi-value text-rose-600">—</p>
+          <p id="kpi-defisit-sub" class="kpi-sub">dari total mahasiswa</p>
+        </div>
+      </section>
+
+      <!-- ===== ROW 1: Donut + Bar Kategori + Line Tren ===== -->
+      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="chart-card">
+          <h3 class="chart-title">Komposisi Tingkat Kebutuhan</h3>
+          <div class="chart-container-sm"><canvas id="chart-donut"></canvas></div>
+        </div>
+        <div class="chart-card md:col-span-1 xl:col-span-1">
+          <h3 class="chart-title">Pengeluaran per Kategori</h3>
+          <div class="chart-container"><canvas id="chart-bar-kategori"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">Tren Pengeluaran Jul–Sep 2026</h3>
+          <div class="chart-container"><canvas id="chart-line-tren"></canvas></div>
+        </div>
+      </section>
+
+      <!-- ===== ROW 2: Stacked Fakultas + Bar Tempat Tinggal + Pie Dana ===== -->
+      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="chart-card xl:col-span-1">
+          <h3 class="chart-title">Komposisi Kebutuhan per Fakultas</h3>
+          <div class="chart-container"><canvas id="chart-stacked-fakultas"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">Rata-rata Pengeluaran per Tempat Tinggal</h3>
+          <div class="chart-container"><canvas id="chart-bar-tempat"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">Distribusi Sumber Dana</h3>
+          <div class="chart-container-sm"><canvas id="chart-pie-dana"></canvas></div>
+        </div>
+      </section>
+
+      <!-- ===== ROW 3: Scatter + Bar Angkatan ===== -->
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="chart-card">
+          <h3 class="chart-title">Pemasukan vs % Pengeluaran Tersier</h3>
+          <p class="text-xs text-gray-400 mb-2">Setiap titik mewakili satu mahasiswa</p>
+          <div class="chart-container"><canvas id="chart-scatter"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-title">Rata-rata Pengeluaran per Angkatan</h3>
+          <div class="chart-container"><canvas id="chart-bar-angkatan"></canvas></div>
+        </div>
+      </section>
+
+      <!-- ===== ROW 4: Insight Cards ===== -->
+      <section>
+        <h2 class="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">Insight Otomatis</h2>
+        <div id="insight-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+      </section>
+
+      <!-- ===== ROW 5: Top 10 Table ===== -->
+      <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h3 class="text-sm font-semibold text-gray-700">Top 10 Mahasiswa — Pengeluaran Tertinggi</h3>
+          <p class="text-xs text-gray-400 mt-0.5">Berdasarkan total pengeluaran September 2026</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 uppercase tracking-wide text-left">
+                <th class="px-4 py-3 font-semibold">#</th>
+                <th class="px-4 py-3 font-semibold">Nama</th>
+                <th class="px-4 py-3 font-semibold">Prodi</th>
+                <th class="px-4 py-3 font-semibold">Angkatan</th>
+                <th class="px-4 py-3 font-semibold">Tempat Tinggal</th>
+                <th class="px-4 py-3 font-semibold text-right">Total (Sep)</th>
+                <th class="px-4 py-3 font-semibold text-right">Pemasukan</th>
+                <th class="px-4 py-3 font-semibold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-top10"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div><!-- /#dashboard-content -->
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="mt-8 pb-8 text-center text-xs text-gray-400 border-t border-gray-100 pt-6">
+    <p>⚠️ <strong>Data simulasi</strong> yang dibuat untuk keperluan pembelajaran dan tidak merepresentasikan data riil mahasiswa ITS.</p>
+    <p class="mt-1">Dashboard Pengeluaran Mahasiswa ITS &copy; 2026 · Dibuat untuk tugas analitik data</p>
+  </footer>
+
+  <!-- ===== SCRIPT ===== -->
+  <script src="script.js"></script>
+</body>
+</html>
